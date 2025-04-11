@@ -11,7 +11,11 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
-    "vue": "^3.5.13"
+    "@types/leaflet": "^1.9.17",
+    "leaflet": "^1.9.4",
+    "pinia": "^3.0.2",
+    "vue": "^3.5.13",
+    "vue3-google-map": "^0.21.1"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.1",

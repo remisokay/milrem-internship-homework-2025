@@ -1,47 +1,77 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useStore } from './store';
+import MapView from './components/MapView.vue';
+// import EngineControl from './components/EngineControl.vue';
+// import WaypointsList from './components/WaypointsList.vue';
+// import NotificationPopup from './components/NotificationPopup.vue';
+
+const store = useStore();
+// const showNotification = ref(false);
+// const notificationMessage = ref('');
+
+// Handle keyboard events
+const handleKeyDown = (event: KeyboardEvent) => {
+  let direction: 'up' | 'down' | 'left' | 'right' | null = null;
+
+  switch (event.key) {
+    case 'ArrowUp':
+      direction = 'up';
+      break;
+    case 'ArrowDown':
+      direction = 'down';
+      break;
+    case 'ArrowLeft':
+      direction = 'left';
+      break;
+    case 'ArrowRight':
+      direction = 'right';
+      break;
+  }
+
+  if (direction) {
+    const success = store.moveUgv(direction);
+
+    // if (!success) {
+    //   // Show notification
+    //   notificationMessage.value = 'Please start the engine before moving the UGV';
+    //   showNotification.value = true;
+    //
+    //   // Hide notification after 3 seconds
+    //   setTimeout(() => {
+    //     showNotification.value = false;
+    //   }, 3000);
+    // }
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown);
+});
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="app">
+    <MapView />
+<!--    <EngineControl />-->
+<!--    <WaypointsList />-->
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+<!--    <NotificationPopup-->
+<!--        v-if="showNotification"-->
+<!--        :message="notificationMessage"-->
+<!--        @close="showNotification = false"-->
+<!--    />-->
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.app {
+  position: relative;
+  width: 100%;
+  height: 100vh;
 }
 </style>
