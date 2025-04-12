@@ -1,45 +1,30 @@
 import { defineStore } from 'pinia';
+import type { Position, Waypoint } from '@/interfaces/types';
 
-// Define interfaces for our data types
-export interface Position {
-    lat: number;
-    lng: number;
-}
 
-export interface Waypoint {
-    id: string;
-    position: Position;
-    name: string;
-}
-
-// Create and export the store
 export const useStore = defineStore('ugvStore', {
     state: () => ({
-        // UGV state
         engineStarted: false,
-        ugvPosition: { lat: 51.505, lng: -0.09 } as Position,
+        ugvPosition: { lat: 59.437, lng: 24.7536 } as Position,
         waypoints: [] as Waypoint[],
         selectedWaypoint: null as Waypoint | null
     }),
 
     actions: {
-        // Engine controls
         toggleEngine() {
             this.engineStarted = !this.engineStarted;
         },
 
-        // Position controls
         setUgvPosition(position: Position) {
             this.ugvPosition = position;
         },
 
-        // Move UGV in a direction
         moveUgv(direction: 'up' | 'down' | 'left' | 'right') {
             if (!this.engineStarted) {
-                return false; // Engine not started
+                return false;
             }
 
-            const step = 0.0005; // Adjust step size as needed
+            const step = 0.0005;
 
             switch (direction) {
                 case 'up':
@@ -56,10 +41,9 @@ export const useStore = defineStore('ugvStore', {
                     break;
             }
 
-            return true; // Movement successful
+            return true;
         },
 
-        // Waypoint management
         addWaypoint(position: Position, name: string = 'New Waypoint') {
             const id = `waypoint-${Date.now()}`;
             const waypoint = { id, position, name };
@@ -76,10 +60,6 @@ export const useStore = defineStore('ugvStore', {
             if (waypoint) {
                 waypoint.name = newName;
             }
-        },
-
-        selectWaypoint(waypoint: Waypoint | null) {
-            this.selectedWaypoint = waypoint;
         },
 
         driveToWaypoint(waypoint: Waypoint) {

@@ -2,16 +2,15 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useStore } from './store';
 import MapView from './components/MapView.vue';
-// import EngineControl from './components/EngineControl.vue';
-// import WaypointsList from './components/WaypointsList.vue';
-// import NotificationPopup from './components/NotificationPopup.vue';
+import EngineControl from './components/EngineControl.vue';
+import WaypointsList from './components/WayPoints.vue';
+import NotificationPopup from './components/Notification.vue';
 
 const store = useStore();
-// const showNotification = ref(false);
-// const notificationMessage = ref('');
+const showNotification = ref(false);
+const notificationMessage = ref('');
 
-// Handle keyboard events
-const handleKeyDown = (event: KeyboardEvent) => {
+const handleKeyboard = (event: KeyboardEvent) => {
   let direction: 'up' | 'down' | 'left' | 'right' | null = null;
 
   switch (event.key) {
@@ -32,46 +31,58 @@ const handleKeyDown = (event: KeyboardEvent) => {
   if (direction) {
     const success = store.moveUgv(direction);
 
-    // if (!success) {
-    //   // Show notification
-    //   notificationMessage.value = 'Please start the engine before moving the UGV';
-    //   showNotification.value = true;
-    //
-    //   // Hide notification after 3 seconds
-    //   setTimeout(() => {
-    //     showNotification.value = false;
-    //   }, 3000);
-    // }
+    if (!success) {
+      notificationMessage.value = 'Please start the engine before moving the UGV';
+      showNotification.value = true;
+      setTimeout(() => {
+        showNotification.value = false;
+      }, 3000);
+    }
   }
 };
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('keydown', handleKeyboard);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('keydown', handleKeyboard);
 });
 </script>
 
 <template>
   <div class="app">
-    <MapView />
-<!--    <EngineControl />-->
-<!--    <WaypointsList />-->
+    <div class="app-container">
+      <MapView />
+      <EngineControl />
+      <WaypointsList />
 
-<!--    <NotificationPopup-->
-<!--        v-if="showNotification"-->
-<!--        :message="notificationMessage"-->
-<!--        @close="showNotification = false"-->
-<!--    />-->
+      <NotificationPopup
+          v-if="showNotification"
+          :message="notificationMessage"
+          @close="showNotification = false"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
 .app {
-  position: relative;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  background: white;
+  background: radial-gradient(circle,rgba(255, 255, 255, 0.39) 54%, rgba(212, 212, 212, 1) 100%);
+}
+
+.app-container {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>
